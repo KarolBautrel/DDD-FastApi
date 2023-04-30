@@ -1,17 +1,18 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, status
 from domain.shipping.service import ShippingService
+from schemas.shipping.shipping_schemas import ShipmentRequest
 
 router = APIRouter(prefix="/shipping", tags=["shipping"])
 ShippingServiceImpl = ShippingService()
 
 
-@router.post("/")
+@router.post("/", status_code=status.HTTP_201_CREATED)
 def create_shipping():
     pass
 
 
 @router.get("/")
-def get_shippings():
+def get_shippings(request: ShipmentRequest):
     pass
 
 

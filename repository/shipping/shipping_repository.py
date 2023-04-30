@@ -2,7 +2,7 @@ from sqlalchemy.orm import sessionmaker
 import db.engine as engine
 from domain.shipping.model import Shipment, OrderLine
 from schemas.shipping.shipping_schemas import ShipmentRequest
-from typing import List
+from typing import List, Optional
 
 
 class ShippingRepository:
@@ -10,27 +10,26 @@ class ShippingRepository:
         self.Base = sessionmaker(autocommit=False, autoflush=False, bind=engine.engine)
         self.session = self.Base()
 
-    def map_shipment(self, shipment: Shipment) -> None:
-        self.shipment = Shipment(order_ref=shipment.order_ref, qty=shipment.qty)
-
-    def get(self) -> List[Shipment]:
+    def get_shipments(self) -> List[Shipment]:
         self.session.query(Shipment).all()
 
+    def get_shipment(self, ref) -> Optional[Shipment]:
+        return self.session.query(Shipment).filter(Shipment.order_ref == ref).first()
+
+    def get_line_order(self, ref) -> Optional[OrderLine]:
+        return self.session.query(OrderLine).filter(OrderLine.order_ref == ref).first()
+
     def create_shipment(self, shipment: ShipmentRequest) -> Shipment:
-        self.map_shipment(shipment)
+        self.session.add(Shipment(order_ref=shipment.order_ref, qty=shipment.qty))
+        self.session.commit()
+        return self.shipment
+
+    def update_line_order(self, ref, qty):
         line_order = (
-            self.session.query(OrderLine)
-            .filter(OrderLine.order_ref == self.shipment.order_ref)
-            .first()
+            self.session.query(OrderLine).filter(OrderLine.order_ref == ref).first()
         )
-        if line_order is None:
-            raise Exception
-        if self.shipment.can_allocate(line_order):
-            self.session.add(
-                Shipment(order_ref=self.shipment.order_ref, qty=self.shipment.qty)
-            )
-            self.session.commit()
-            return self.shipment
+        line_order.qty = qty
+        self.session.commit()
 
     def create_order_lines(self):
         """
