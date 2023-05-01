@@ -7,12 +7,12 @@ ShippingServiceImpl = ShippingService()
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
-def create_shipping():
-    pass
+def create_shipping(request: ShipmentRequest):
+    ShippingServiceImpl.create_new_shipment(request)
 
 
 @router.get("/")
-def get_shippings(request: ShipmentRequest):
+def get_shippings():
     pass
 
 

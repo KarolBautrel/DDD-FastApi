@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
 
-class ShipmentRequest(BaseModel):
+class OrderAllocated(BaseModel):
     order_ref: str
     qty: int
