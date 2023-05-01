@@ -20,7 +20,7 @@ engine = create_engine(
 Base = declarative_base()
 
 
-class OrderLines(Base):
+class StockProduct(Base):
     __tablename__ = "order_lines"
 
     id = Column(Integer, primary_key=True)

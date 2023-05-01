@@ -1,5 +1,5 @@
 from fastapi import APIRouter, status
-from domain.shipping.service import ShippingService
+from services.shipping.service import ShippingService
 from schemas.shipping.shipping_schemas import ShipmentRequest
 
 router = APIRouter(prefix="/shipping", tags=["shipping"])

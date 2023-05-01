@@ -1,14 +1,11 @@
-from sqlalchemy.orm import sessionmaker
-import db.engine as engine
 from domain.shipping.model import Shipment, OrderLine
 from schemas.shipping.shipping_schemas import ShipmentRequest
 from typing import List, Optional
 
 
 class ShippingRepository:
-    def __init__(self):
-        self.Base = sessionmaker(autocommit=False, autoflush=False, bind=engine.engine)
-        self.session = self.Base()
+    def __init__(self, session):
+        self.session = session
 
     def get_shipments(self) -> List[Shipment]:
         self.session.query(Shipment).all()
@@ -21,15 +18,12 @@ class ShippingRepository:
 
     def create_shipment(self, shipment: ShipmentRequest) -> Shipment:
         self.session.add(Shipment(order_ref=shipment.order_ref, qty=shipment.qty))
-        self.session.commit()
-        return self.shipment
 
     def update_line_order(self, ref, qty):
         line_order = (
             self.session.query(OrderLine).filter(OrderLine.order_ref == ref).first()
         )
         line_order.qty = qty
-        self.session.commit()
 
     def create_order_lines(self):
         """
@@ -40,4 +34,3 @@ class ShippingRepository:
         self.session.add(OrderLine(order_ref="PUMA-SUPER", qty=20))
         self.session.add(OrderLine(order_ref="REEBOK-CLASS", qty=25))
         self.session.add(OrderLine(order_ref="NIKE-SPORT", qty=30))
-        self.session.commit()
