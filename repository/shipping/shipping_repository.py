@@ -1,4 +1,5 @@
-from domain.shipping.model import Shipment, OrderLine
+from domain.shipping.model import Shipment
+from domain.shipping.value_objects import OrderLine
 from schemas.shipping.shipping_schemas import ShipmentDto
 from typing import List, Optional
 

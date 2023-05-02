@@ -1,5 +1,6 @@
 from services.shipping.unit_of_work import ShippingUnitOfWork
-from domain.shipping.model import Shipment, OrderLine
+from domain.shipping.model import Shipment
+from domain.shipping.value_objects import OrderLine
 from configs import RedisKeys
 
 
@@ -26,7 +27,10 @@ class ShippingService:
 
     def cancel_shipment(self, shipment_id: int):
         shipment = self.uow.get_shipment_by_id(shipment_id)
-        if shipment.status == "Canceled":
+        import pdb
+
+        pdb.set_trace()
+        if shipment.status == "Cancelled":
             raise Exception("Status is already canceled")
         shipment_domain_model = self.map_shipment(shipment)
 

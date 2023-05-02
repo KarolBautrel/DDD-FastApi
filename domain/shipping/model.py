@@ -1,14 +1,9 @@
 from event_store.event_store import EventStore
 from configs import RedisKeys
 from domain.shipping.events import OrderAllocated, OrderDeallocated
+from domain.shipping.value_objects import OrderLine
 
 event_store = EventStore()
-
-
-class OrderLine:
-    def __init__(self, order_ref, qty):
-        self.order_ref = order_ref
-        self.qty = qty
 
 
 class Shipment:
