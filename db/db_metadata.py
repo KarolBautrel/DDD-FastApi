@@ -7,7 +7,11 @@ from sqlalchemy import create_engine
 mapper_registry = registry()
 
 logger = logging.getLogger(__name__)
+SQLALCHEMY_DATABASE_URL = "sqlite:///database.db"  # Sqlite for local fast deployment
 
+engine = create_engine(
+    SQLALCHEMY_DATABASE_URL, echo=True, connect_args={"check_same_thread": False}
+)
 
 order_lines = Table(
     "order_lines",
@@ -29,3 +33,6 @@ shipments = Table(
 def start_mapper():
     mapper_registry.map_imperatively(OrderLine, order_lines)
     mapper_registry.map_imperatively(Shipment, shipments)
+
+
+mapper_registry.metadata.create_all(engine)
