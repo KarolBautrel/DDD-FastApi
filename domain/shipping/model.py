@@ -1,6 +1,6 @@
 from event_store.event_store import EventStore
 from configs import RedisKeys
-from domain.shipping.events import OrderAllocated
+from domain.shipping.events import OrderAllocated, OrderDeallocated
 
 event_store = EventStore()
 
@@ -12,27 +12,35 @@ class OrderLine:
 
 
 class Shipment:
-    def __init__(self, order_ref, qty):
+    def __init__(self, order_ref, qty, status=None):
         self.order_ref = order_ref
         self.qty = qty
         self._allocation = []
+        self.status = status
 
     def can_allocate(self, line: OrderLine):
         return self.order_ref == line.order_ref and self.qty <= line.qty
+
+    def can_deallocate(self, line: OrderLine):
+        return self.order_ref == line.order_ref
 
     def allocate(self, line: OrderLine):
         if line in self._allocation:
             raise Exception("")
         self._allocation.append(line)
+        self.status = "Created"
         event_store.publish_event(
             RedisKeys.ORDER_ALLOCATED.value,
-            OrderAllocated(order_ref=self.order_ref, qty=self.qty).dict(),
+            OrderAllocated(
+                order_ref=line.order_ref, qty=self.qty, status=self.status
+            ).dict(),
         )
-        """
-        Will be replaced with event send, for now we 
-        weill stick to the unit of work.
-        """
 
     def deallocate(self, line: OrderLine):
-        if line in self._allocation:
-            self._allocation.pop(line)
+        self.status = "Cancelled"
+        event_store.publish_event(
+            RedisKeys.ORDER_DEALLOCATED.value,
+            OrderDeallocated(
+                order_ref=line.order_ref, qty=self.qty, status=self.status
+            ).dict(),
+        )

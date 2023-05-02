@@ -7,12 +7,20 @@ ShippingServiceImpl = ShippingService()
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
-def create_shipping(request: ShipmentRequest):
+def create_shipment(request: ShipmentRequest):
     ShippingServiceImpl.create_new_shipment(request)
 
 
+@router.patch("/{id}/cancel", status_code=status.HTTP_200_OK)
+def cancel_shipment(shipment_id: int):
+    import pdb
+
+    pdb.set_trace()
+    ShippingServiceImpl.cancel_shipment(shipment_id)
+
+
 @router.get("/")
-def get_shippings():
+def get_shipments():
     pass
 
 

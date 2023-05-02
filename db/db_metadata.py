@@ -27,6 +27,7 @@ shipments = Table(
     Column("id", Integer, primary_key=True),
     Column("order_ref", String, ForeignKey("order_lines.order_ref")),
     Column("qty", Integer, nullable=False),
+    Column("status", String, nullable=False),
 )
 
 
