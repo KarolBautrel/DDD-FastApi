@@ -1,7 +1,8 @@
 import logging
 from sqlalchemy.orm import relationship, registry
 from sqlalchemy import MetaData, Table, Column, String, Integer, ForeignKey
-from domain.shipping.model import Shipment, OrderLine
+from domain.shipping.model import Shipment
+from domain.shipping.value_objects import OrderLine, RamCube, GraphicsCard, Processor
 from sqlalchemy import create_engine
 
 mapper_registry = registry()
@@ -20,6 +21,36 @@ order_lines = Table(
     Column("order_ref", String(255)),
     Column("qty", Integer, nullable=False),
 )
+ram_cubes = Table(
+    'ram_cubes',
+    mapper_registry.metadata,
+    Column("id", Integer, primary_key=True),
+    Column("order_ref", String(255)),
+    Column("qty", Integer, nullable=False),
+    Column("size", String, nullable=False),
+
+)
+graph_cards = Table(
+    'graph_cards',
+    mapper_registry.metadata,
+    Column("id", Integer, primary_key=True),
+    Column("order_ref", String(255)),
+    Column("qty", Integer, nullable=False),
+    Column("brand", String, nullable=False),
+    Column("size", String, nullable=False),
+
+)
+processors = Table(
+    'processors',
+    mapper_registry.metadata,
+    Column("id", Integer, primary_key=True),
+    Column("order_ref", String(255)),
+    Column("qty", Integer, nullable=False),
+    Column("size", String, nullable=False),
+    Column("brand", String, nullable=False),
+
+)
+
 
 shipments = Table(
     "shipments",
@@ -34,6 +65,9 @@ shipments = Table(
 def start_mapper():
     mapper_registry.map_imperatively(OrderLine, order_lines)
     mapper_registry.map_imperatively(Shipment, shipments)
+    mapper_registry.map_imperatively(RamCube, ram_cubes)
+    mapper_registry.map_imperatively(GraphicsCard, graph_cards)
+    mapper_registry.map_imperatively(Processor, processors)
 
 
 mapper_registry.metadata.create_all(engine)
