@@ -51,12 +51,26 @@ processors = Table(
 
 )
 
+computer = Table(
+    'computers',
+    mapper_registry.metadata,
+    Column("id", Integer, primary_key=True),
+    Column("ram_cube", String, ForeignKey("ram_cubes.order_ref")),
+    Column("processor", String, ForeignKey("processors.order_ref")),
+    Column("graph_card", String, ForeignKey("graph_cards.order_ref")),
+
+    Column("backref", String, ),
+
+)
+
+
 
 shipments = Table(
     "shipments",
     mapper_registry.metadata,
     Column("id", Integer, primary_key=True),
     Column("order_ref", String, ForeignKey("order_lines.order_ref")),
+    Column('computer', String, ForeignKey('computers.backref')),
     Column("qty", Integer, nullable=False),
     Column("status", String, nullable=False),
 )

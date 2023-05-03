@@ -46,6 +46,7 @@ class Shipment:
         self.qty = qty
         self.computer = computer
         self.status = status
+        self.computer = Computer
 
     def can_allocate(self, line: OrderLine):
         return self.order_ref == line.order_ref and self.qty <= line.qty
