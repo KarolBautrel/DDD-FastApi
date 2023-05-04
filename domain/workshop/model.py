@@ -1,4 +1,9 @@
 from domain.workshop.value_objects import RamCube, GraphicsCard, Processor
+from event_store.event_store import EventStore
+from domain.workshop.events import PartChanged
+from configs import RedisKeys
+
+event_store = EventStore()
 
 
 class Computer:
@@ -36,12 +41,25 @@ class Computer:
 
     def change_ram(self, ram_cube):
         self.ram_cube = ram_cube
-        # Send event
+        event_store.publish_event(
+            RedisKeys.PART_CHANGED.value,
+            PartChanged(ram_cube.__class__.__name__, self.backref, ram_cube.order_ref),
+        )
 
     def change_card(self, graphics_card):
         self.graphics_card = graphics_card
-        # Send event
+        event_store.publish_event(
+            RedisKeys.PART_CHANGED.value,
+            PartChanged(
+                graphics_card.__class__.__name__, self.backref, graphics_card.order_ref
+            ),
+        )
 
     def change_processor(self, processor):
         self.processor = processor
-        # Send event
+        event_store.publish_event(
+            RedisKeys.PART_CHANGED.value,
+            PartChanged(
+                processor.__class__.__name__, self.backref, processor.order_ref
+            ),
+        )

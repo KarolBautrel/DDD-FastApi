@@ -24,7 +24,7 @@ class ComputerRepository:
             raise Exception("Computer not found")
 
         for data in fields_attrs:
-            setattr(computer, data[0], data[1])  # model, field, value
+            setattr(computer, data[0], data[1])  # model, field(string), value
 
     def create_computer(
         self, ram: RamCube, processor: Processor, graph_card: GraphicsCard

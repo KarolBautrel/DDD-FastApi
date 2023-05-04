@@ -31,9 +31,7 @@ class WorkshopUnitOfWork:
     def get_computer_by_backref(self, backref):
         return self.repository.get_computer_by_backref(backref)
 
-    def change_part(
-        self, part_change_dto: PartChangeDTO, fields_attrs: List[Tuple[str, any]]
-    ):
+    def change_part(self, part_change_dto: PartChangeDTO):
         computer = self.repository.get_computer_by_backref(
             part_change_dto.computer_backref
         )
@@ -44,7 +42,7 @@ class WorkshopUnitOfWork:
         if part is None:
             raise Exception("Wrong part")
 
-        self.repository.update_computer(computer, [()])
+        self.repository.update_computer(computer, [(str(part_name), part)])
 
     def create_computer(
         self, ram: RamCube, processor: Processor, graph_card: GraphicsCard
